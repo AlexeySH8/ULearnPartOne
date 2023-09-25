@@ -1,25 +1,81 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34031.279
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{D2B48779-00D8-4B3F-9E20-F8A0FDE13C66}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D2B48779-00D8-4B3F-9E20-F8A0FDE13C66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2B48779-00D8-4B3F-9E20-F8A0FDE13C66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2B48779-00D8-4B3F-9E20-F8A0FDE13C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2B48779-00D8-4B3F-9E20-F8A0FDE13C66}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DE11192C-3037-4B0E-8A62-1405B9D65C44}
-	EndGlobalSection
-EndGlobal
+using System;
+namespace GeometryTasks
+{
+    public class Vector
+    {
+        public double X, Y;
+
+        public double GetLength()
+        {
+            return Geometry.GetLength(this);
+        }
+
+        public Vector Add(Vector vector)
+        {
+            return Geometry.Add(this, vector);
+        }
+
+        public bool Belongs(Segment segment)
+        {
+            return Geometry.IsVectorInSegment(this, segment);
+        }
+    }
+
+    public class Segment
+    {
+        public Vector Begin, End;
+
+        public double GetLength()
+        {
+            return Geometry.GetLength(this);
+        }
+
+        public bool Contains(Vector vector)
+        {
+            return Geometry.IsVectorInSegment(vector, this);
+        }
+    }
+
+    public class Geometry
+    {
+        public static double GetLength(Vector vector)
+        {
+            return Math.Sqrt((vector.X * vector.X) + (vector.Y * vector.Y));
+        }
+
+        public static Vector Add(Vector vectorOne, Vector vectorTwo)
+        {
+            var vector = new Vector();
+            vector.X = vectorOne.X + vectorTwo.X;
+            vector.Y = vectorOne.Y + vectorTwo.Y;
+            return vector;
+        }
+
+        public static double GetLength(Segment segment)
+        {
+            var x1 = segment.Begin.X;
+            var y1 = segment.Begin.Y;
+            var x2 = segment.End.X;
+            var y2 = segment.End.Y;
+            return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+        }
+
+        public static bool IsVectorInSegment(Vector vector, Segment segment)
+        {
+            var segmentLength = Geometry.GetLength(segment);
+            var length1 = Math.Sqrt(((vector.X - segment.Begin.X) * (vector.X - segment.Begin.X)) +
+                ((vector.Y - segment.Begin.Y) * (vector.Y - segment.Begin.Y)));
+
+            var length2 = Math.Sqrt(((vector.X - segment.End.X) * (vector.X - segment.End.X)) +
+                ((vector.Y - segment.End.Y) * (vector.Y - segment.End.Y)));
+
+            return AlmostEqual((length2 + length1), segmentLength);
+        }
+
+        public static bool AlmostEqual(double a, double b)
+        {
+            const double epsilon = 0.1;
+            return Math.Abs(a - b) < epsilon;
+        }
+    }
+}
