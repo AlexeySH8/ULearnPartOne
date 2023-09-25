@@ -1,2 +1,1 @@
-# ULearnPartOne
-Практики курса ULearn
+Ссылка на курс - https://ulearn.me
